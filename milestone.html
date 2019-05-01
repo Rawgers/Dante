@@ -4,11 +4,32 @@
         <meta charset="utf-8">
         <title>Dante Milestone</title>
     </head>
-    <body style="text-align: center">
-        <h1>Dante Milestone</h1>
-        <div>Wind field</div>:
-        <img src="images/wind_field.png" width="400px"/>
-        <div>Wind velocities:</div>
-        <img src="images/wind_velocities.png" width="400px"/>
+    <body>
+        <h1 style="text-align: center">Dante Milestone</h1>
+        <div>To lecture slide:</div>
+        <a href="url">https://docs.google.com/presentation/d/1d_bgUOPYUURsiaywMgNSw7m3En04VbNhp_AYaiXceG4/edit#slide=id.g56dab1fcd5_0_454</a>
+        <p>
+            In our project dubbed Dante: Trial By Fire, inspired by Khorloo Oyundolgor’s paper A Study on Efficient Algorithms for Generating Virtual Wind Field Usable for Real-Time Animation, we attempt to animate a fire simulation using non-frozen 3D windfields. We animated the results of our calculations with Unity’s particle generators.
+        </p>
+        <p>
+            In the current iteration of our project, we employ 1/f (“pink”) noise alongside Fourier filtering to generate 1D, 2D, and 3D noise spectra. These noise results are applied to our generated wind turbulence values, and the resulting values are inverse Fourier transformed for a time series of wind velocity at some location. We repeat this process multiple times in order to generate our desired frozen wind field. The below visualizations of our noise and wind fields are generated in Python using numpy and matplotlib. Though Khorloo proposes fractal Brownian motion (fBm) noise as the ideal noise for modeling wind behavior, we encountered great difficulty when trying to reproduce her results. We hope that with further investigation we can successfully implement fBm noise.
+        </p>
+        <div style="text-align: center">
+            <div>1D noise</div>
+            <img src="images/noise1d.png" width="800px"/>
+            <div>2D noise</div>
+            <img src="images/noise2d.png" width="800px"/>
+            <div>3D noise</div>
+            <table style="width:100%">
+                <tr>
+                    <img src="images/noise3d0.1h.png" width="250px"/>
+                    <img src="images/noise3d0.3h.png" width="250px"/>
+                    <img src="images/noise3d0.8h.png" width="250px"/>
+                </tr>
+            </table>
+        </div>
+        <p>
+            As far as non-frozen wind fields (wind fields that change over time) are concerned, we have a rough animation routine completed. We generate a 4D array of wind velocities at each 3D position varying over time. However, once our timesteps run out, we will have to generate a completely new wind field, which does not model natural wind behavior. Khorloo’s paper describes using Taylor’s frozen turbulence hypothesis to reduce the 4D temporal dimension down to 3D. This is something we will have to investigate further. Beyond the wind field animation, what remains is fire simulation, for which we must figure out how to apply our generated wind velocities to Unity’s particle generator. We still keep our final goal of being able to animate fire using non-frozen wind fields.
+        </p>
     </body>
 </html>
