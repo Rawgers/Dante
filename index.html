@@ -140,12 +140,12 @@
                         </tr>
                     </table>
                 </div>
-                <p>S<sub>u</sub>, S<sub>v</sub>, S<sub>w</sub> refer to power spectral values at each frequency for velocities in the x, y, and z directions respectively. These values are dervied from the 
+                <p>S<sub>u</sub>, S<sub>v</sub>, S<sub>w</sub> refer to power spectral values at each frequency for velocities in the x, y, and z directions respectively. These values are dervied from the
                     1/<i>f<sup>β</sup></i> noise formula above, where beta is chosen from analyzing spectra of real-world wind data. The A values are based off the real-world wind velocities and scale the spectrum values.
-                    We assume that turbulence in the secondary directions (v and w) are simply some smaller scalar multiple of the velocity in the main direction. 
+                    We assume that turbulence in the secondary directions (v and w) are simply some smaller scalar multiple of the velocity in the main direction.
                 </p>
                 <p>
-                    We then apply an inverse Fourier transform on these spectra to acquire the turbulence values for each components at each position and timestep. 
+                    We then apply an inverse Fourier transform on these spectra to acquire the turbulence values for each components at each position and timestep.
                     The actual wind velocity value will be the mean wind speed plus the turbulence value for the main direction, and simply just the turbulence values for the secondary directions.
                 </p>
                 <div align="center">
@@ -191,6 +191,12 @@
                 <ol>
                     <li>
                     Oyundolgor, Khorloo. “A Study on Efficient Algorithms for Generating Virtual Wind Field Usable for Real-Time Animation.” <i>Iwate University</i>, 2012.
+                    </li>
+                    <li>
+                        <a href="https://en.wikipedia.org/wiki/Pink_noise">Wikipedia page for pink noise.</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/crflynn/fbm">fBm generation library</a>
                     </li>
                 </ol>
             </div>
