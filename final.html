@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html style="height: 100%; width:100%">
+    <head>
+        <meta charset="utf-8">
+        <title>Dante Final</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    </head>
+    <body class="container" style='font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;'>
+        <div align="center" style="margin-bottom: 20px;">
+            <h1>Dante: Trial By Fire Final</h1>
+            <h3>Christopher Qian, Roger Luo, Michael Hsiu</h3>
+        </div>
+        <div style="margin: 0 10px;">
+            <div>
+                <h3>Abstract</h3>
+                <p>
+                    Computer graphics simulations of wind are important in creating realistic representations of
+                    the world. In this project, we adopt the work of Dr. Khorloo Oyundolgor in
+                    <i>A Study on Efficient Algorithms for Generating Virtual Wind Field Usable
+                    for Real-time Animation</i> [1] to generate wind field maps. Using Oyundolgor’s noise-based algorithm, we
+                    generate dynamic wind field maps to demonstrate the computational
+                    efficiency of simulating wind. We proceed to apply this wind field to a
+                    fire animation simulation to demonstrate a manifestation of the wind
+                    field.
+                </p>
+            </div>
+            <div>
+                <h3>Technical Approach</h3>
+                <p>
+                    Our project is broken up into two parts: simulating wind and applying wind to fire.
+                </p>
+                <h4>Wind Simulation</h4>
+                <hr/>
+                <p>
+                    Our goal is to model wind as it changes over time in a 3D environment.
+                    We model a wind field by generating velocities at discrete points in 3D space through signals changing over time.
+                    We follow Oyundolgor's approach of using 1/f noise to model the power spectral density of these velocities. By applying formulas derived in the paper
+                    based off real historical wind data and converting back into the time domain, we are able to calculate wind velocities values for each axis at each point.
+                </p>
+                <h5>Noise Generation</h5>
+                <p>
+                    Noise, as defined by Oyundolgor, is "the random number generator of computer graphics" [1]. Noise is a simple and efficient to compute method of modelling the fluctuations and patterns of wind.
+                    In the paper, Oyundolgor describes of 1/<i>f<sup>β</sup></i> noise, where <i>f</i> f refers to frequency, and β refers to an exponent determining the fluctuation of the signal.
+                    This type of noise has a power spectral density (PSD) -- the power present at each frequency in a signal -- proportional to 1/<i>f</i> and is found in many natural phenomena, including wind velocities. In order to generate this noise,
+                    we begin by creating white noise from sampling from a standard normal distribution and then apply a fast Fourier transform to convert it into the frequency domain. We then multiply these values by a formula proprtional to 1 / frequency and apply an inverse fast Fourier transform to convert back into
+                    noise values in the time domain. This generates a simple form of 1/<i>f<sup>β</sup></i> noise. We assume that the data is sampled at 1Hz, and so the frequencies we need to calculate the spectrum values from range from 1/N hz to 1/2 Hz (Nyquist) with a step size of 1/N hz, where N is the number of samples taken in the time signal.
+                    This noise generation process can be generalized to higher dimensions by taking n frequency values for an n-dimensional signal at each timestep, using the same range and step size of frequencies for each dimension as in the 1-D case.
+                    Examples of 1-D, 2-D, and 3-D 1/<i>f<sup>β</sup></i> noise are included below.
+                </p>
+                <div align="center">
+                    <table style="width: 100%;">
+                        <tr>
+                            <td align="middle">
+                                <img src="images/khorloo_noise_formula.png" width="480px" />
+                                <figcaption align="middle">Formula for calculating spectral values at an n-dimensional frequency for 1/<i>f<sup>β</sup></i> noise from [1]. H refers to the Hurst exponent, a parameter for tuning the roughness of the signal.</figcaption>
+                            </td>
+                        </tr>
+                    </table>
+                    </br>
+                    <div>1D generated noise</div>
+                    <img src="images/noise1d.png" width="800px"/>
+                    <div>2D noise</div>
+                    <img src="images/noise2d.png" width="800px"/>
+                    <div>3D noise</div>
+                    <table style="width:100%">
+                        <tr>
+                            <img src="images/noise3d0.1h.png" width="250px"/>
+                            <img src="images/noise3d0.3h.png" width="250px"/>
+                            <img src="images/noise3d0.8h.png" width="250px"/>
+                        </tr>
+                    </table>
+                    <figcaption align="middle">Figure 1. Generated 1/<i>f<sup>β</sup></i> noise.</figcaption>
+                </div>
+                <h5>Wind Data</h5>
+                <p>
+                    In order to recreate realistic wind fields, Oyundolgor develops her models based off parameters from real world wind data.
+                    The variables included are:
+                    <ul>
+                        <li>
+                            <b>z</b> - Height at which data was recorded
+                        </li>
+                        <li>
+                            <b>z<sub>0</sub></b> - Surface roughness constant
+                        </li>
+                        <li>
+                            <b>U(z)</b> - Mean wind speed at height
+                        </li>
+                        <li>
+                            <b>U_hat(z)</b> - Maximum recorded wind speed at height
+                        </li>
+                        <li>
+                            <b>σ</b> - Dispersion, the standard deviation of recorded wind speeds
+                        </li>
+                        <li>
+                            <b>u*</b> - Friction velocity of the wind, dependent on
+                            the mean wind speed, height, and surface roughness.
+                        </li>
+                        <li>
+                            <b>I(z)</b> - Wind turbulence intensity, σ(z) / U(z)
+                        </li>
+                    </ul>
+                    For our simulation, we used the parameters from Case 1.
+                </p>
+                <div align="center">
+                    <table style="width: 100%;">
+                        <tr>
+                            <td align="middle">
+                                <img src="images/khorloo_wind_data.png" width="580px" />
+                                <figcaption align="middle">Figure 2. Wind data parameters from [1].</figcaption>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <h5>Putting it All Together</h5>
+                <p>
+                    We can finally generate the wind field with the above information. We use the process outlined in the noise section to generate 4-D noise -- 3 dimensions since we are dealing with 3-D space, and one dimension for variation over time.
+                    Our spectrum values will be slightly modified in order to generate realistic velocities for the wind based on the data. Since our wind velocity at each position will be a 3-D vector, we must generate a velocity value for each directional component.
+                </p>
+                <div align="center">
+                    <table style="width=100%">
+                        <tr>
+                            <td align="middle">
+                                <img src="images/khorloo_friction.png" width="200px" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="middle">
+                                <img src="images/khorloo_a_formula.png" width="200px" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="middle">
+                                <img src="images/khorloo_a_directional.png" width="140px" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="middle">
+                                <img src="images/khorloo_spectrum_formula.png" width="350px" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <p>S<sub>u</sub>, S<sub>v</sub>, S<sub>w</sub> refer to power spectral values at each frequency for velocities in the x, y, and z directions respectively. These values are dervied from the 
+                    1/<i>f<sup>β</sup></i> noise formula above, where beta is chosen from analyzing spectra of real-world wind data. The A values are based off the real-world wind velocities and scale the spectrum values.
+                    We assume that turbulence in the secondary directions (v and w) are simply some smaller scalar multiple of the velocity in the main direction. 
+                </p>
+                <p>
+                    We then apply an inverse Fourier transform on these spectra to acquire the turbulence values for each components at each position and timestep. 
+                    The actual wind velocity value will be the mean wind speed plus the turbulence value for the main direction, and simply just the turbulence values for the secondary directions.
+                </p>
+                <div align="center">
+                    <table style="width=100%">
+                        <tr>
+                            <td align="middle">
+                                <img src="images/khorloo_turbulence.png" width="480px" />
+                                <figcaption align="middle">The final wind velocity at a position and timestep, computed from each turbulence component.</figcaption>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <h4>Fire Simulation</h4>
+                <hr/>
+                <p>In order to visualize the wind, we apply the generated wind field to a fire simulation. To model the fire, we use a particle emitter in Unity.
+                    We center the fire within the wind field. At each timestep, the velocity of each particle is set to the nearest sampled point in our 3-D wind field.
+                    Oyundolgor interpolates velocity values in her fire simulation to make it smoother. However, we decided not to do so in order to keep the simulation simple.
+                    Additionally, to make them look more realistic, we make the fire particles shrink and grow more transparent until the end of their lifespan.
+                </p>
+                <h4>Challenges and Lessons Learned</h4>
+                <hr/>
+                <p>
+                    Our main challenge was generating realistic values for wind velocity. We did not have much experience dealing with Fourier transforms and data in the frequency domain.
+                    Additionally, Oyundolgor's paper was not entirely clear about how to use noise or what frequency values she uses to generate the spectra.
+                    We decided to use evenly spaced out frequency values based on the number of timesteps, as described in the noise section. However, since the spectra
+                    values were divided by the magnitude of the frequency values, and these values would become smaller the more timesteps we took, we ended up with
+                    wildly varying turbulence values. For our final model we decided to use 32 timesteps, which produced velocities somewhat close the real wind data we were trying to match.
+                </p>
+                <p>
+                    Another challenge was implementing n-dimensional Fourier and inverse Fourier transforms in C# for Unity. We could not find a suitable library in C# that implemented these functions,
+                    so we decided to use Python instead. We generated wind fields in Python, wrote the values into a file, and loaded these in Unity. This means that our wind-field was not truly
+                    real-time, but this was due to the lack of C# libraries supporting n-dimensional Fourier transforms as opposed to computational efficiency issues.
+                </p>
+            </div>
+            <div>
+                <h3>Results</h3>
+                <p>
+
+                </p>
+            </div>
+            <div>
+                <h3>References</h3>
+                <ol>
+                    <li>
+                    Oyundolgor, Khorloo. “A Study on Efficient Algorithms for Generating Virtual Wind Field Usable for Real-Time Animation.” <i>Iwate University</i>, 2012.
+                    </li>
+                </ol>
+            </div>
+
+            <div>
+                <h3>Contributions</h3>
+                <p><b>Christopher Qian</b> - Worked on generating the noise and wind field information and visualizations in Python. Contributed to wind field generation in C#. Modelled the fire particle emitter in Unity. Did writeups for checkin and final report.</p>
+                <p><b>Roger Luo</b> - Worked on analyzing wind data to generate parameters. Loaded Python wind field data into Unity. Prepared PowerPoint slides and video for checkin and final presentation. Helped with writeup material.</p>
+                <p><b>Michael Hsiu</b> - Implemented Fourier transforms and wind field generation in C# and implemented algorithm to apply wind field to particles in Unity. Created and recorded presentation videos of wind field and fire visualizations in Unity.</p>
+            </div>
+        </div>
+    </body>
+</html>
