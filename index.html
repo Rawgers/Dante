@@ -165,6 +165,39 @@
                     Oyundolgor interpolates velocity values in her fire simulation to make it smoother. However, we decided not to do so in order to keep the simulation simple.
                     Additionally, to make them look more realistic, we make the fire particles shrink and grow more transparent until the end of their lifespan.
                 </p>
+                <p>Below is a video of the wind field by itself, without fire. Each plane represents a sampled point in space where we generate a wind velocity.
+                The planes face in the same direction as the wind's velocity vector.
+                Between each timestep, configured in our setup to be 1 second long, the planes linearly interpolate to face the wind's velocity at the next timestep.
+                The colors of the planes have their R, G, and B components derived from the ratio of a wind vector's U, V, and W velocity components to the maximum U, V, and W
+                components over the entire wind field (higher R value corresponds to a higher U component magnitude, for example).
+                The colors of the planes are updated at each timestep.
+                </p>
+                <br/>
+                <p align="center">
+                    <iframe
+                            src="https://drive.google.com/file/d/1P1ZRdblg0PMU5b3TEPHE093Eiv8dskyz/preview" width="640" height="480">
+                    </iframe>
+                </p>
+                <br/>
+                Below is a video of the wind field with a particle system (representing fire) embedded within it. Here, instead of planes, we have cubes to represent locations
+                where we generate the wind velocity vector. Without the wind field, the particle system applies an initial velocity on the particles
+                to go upwards in world space. With the windfield, at each timestep in our simulation, we find the closest sampled location in the wind field to each particle. We set the particle's
+                velocity to the sampled location's wind velocity. This is repeated at each timestep. When the particle leaves the wind field, it retains the last velocity that it
+                sampled; we do this because we assume that wind velocity will generally remain the same in a volume around the wind field.
+                <br/>
+                <p align="center">
+                    <iframe
+                            src="https://drive.google.com/file/d/1lAQy8ZKIKYGgMJaFLlYMropl7vcKA9lz/preview" width="640" height="480">
+                    </iframe>
+                <p>
+                    <br/>
+                    Below is a video of the fire without the wind field. As can be seen, our generated wind field makes it appear that the fire is being blown to the side.
+                <p align="center">
+                    <iframe
+                            src="https://drive.google.com/file/d/1j6juDjmaSHKF7Ohr94g9_UJpz55_WHCy/preview" width="640" height="480">
+                    </iframe>
+                </p>
+                <br/>
                 <h4>Challenges and Lessons Learned</h4>
                 <hr/>
                 <p>
